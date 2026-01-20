@@ -4,7 +4,7 @@ Contains all machine learning model implementations
 """
 
 from . import logistic_regression
-from .model import decision_tree
+from . import decision_tree
 from . import k_nn
 from . import naive_bayes
 from . import random_forest
