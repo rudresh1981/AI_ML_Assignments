@@ -1,0 +1,128 @@
+{
+    "Logistic Regression": {
+        "filename": "logistic_regression.pkl",
+        "metrics": {
+            "Accuracy": 0.9649122807017544,
+            "Precision": 0.9722222222222222,
+            "Recall": 0.9722222222222222,
+            "F1": 0.9722222222222222,
+            "AUC": 0.9894179894179893,
+            "MCC": 0.9246031746031746
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                1,
+                35
+            ]
+        ]
+    },
+    "Decision Tree": {
+        "filename": "decision_tree.pkl",
+        "metrics": {
+            "Accuracy": 0.9122807017543859,
+            "Precision": 0.9696969696969697,
+            "Recall": 0.8888888888888888,
+            "F1": 0.927536231884058,
+            "AUC": 0.9206349206349206,
+            "MCC": 0.8219277191853159
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                4,
+                32
+            ]
+        ]
+    },
+    "k-NN": {
+        "filename": "k-nn.pkl",
+        "metrics": {
+            "Accuracy": 0.9824561403508771,
+            "Precision": 0.972972972972973,
+            "Recall": 1.0,
+            "F1": 0.9863013698630136,
+            "AUC": 0.9927248677248677,
+            "MCC": 0.962621902223779
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                0,
+                36
+            ]
+        ]
+    },
+    "Naive Bayes": {
+        "filename": "naive_bayes.pkl",
+        "metrics": {
+            "Accuracy": 0.9473684210526315,
+            "Precision": 0.9714285714285714,
+            "Recall": 0.9444444444444444,
+            "F1": 0.9577464788732394,
+            "AUC": 0.9907407407407407,
+            "MCC": 0.8886350389948482
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                2,
+                34
+            ]
+        ]
+    },
+    "Random Forest": {
+        "filename": "random_forest.pkl",
+        "metrics": {
+            "Accuracy": 0.9649122807017544,
+            "Precision": 0.9722222222222222,
+            "Recall": 0.9722222222222222,
+            "F1": 0.9722222222222222,
+            "AUC": 0.9947089947089947,
+            "MCC": 0.9246031746031746
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                1,
+                35
+            ]
+        ]
+    },
+    "XGBoost": {
+        "filename": "xgboost.pkl",
+        "metrics": {
+            "Accuracy": 0.9473684210526315,
+            "Precision": 0.9714285714285714,
+            "Recall": 0.9444444444444444,
+            "F1": 0.9577464788732394,
+            "AUC": 0.992063492063492,
+            "MCC": 0.8886350389948482
+        },
+        "confusion_matrix": [
+            [
+                20,
+                1
+            ],
+            [
+                2,
+                34
+            ]
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (if you don't want to commit large datasets)
+*.csv
+*.xlsx
+*.xls
+
+# Trained model artifacts (optional - exclude if too large)
+# trained_models/
+# Uncomment above line if you want to exclude trained models from git
+
+# Streamlit
+.streamlit/secrets.toml
