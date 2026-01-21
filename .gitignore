@@ -30,6 +30,12 @@ Thumbs.db
 *.xlsx
 *.xls
 
+# Exception: Keep test data templates and important CSV files
+!test.csv
+!trained_models/test.csv
+!trained_models/test_with_labels.csv
+!BreastCancer_Wisconsin.csv
+
 # Trained model artifacts (optional - exclude if too large)
 # trained_models/
 # Uncomment above line if you want to exclude trained models from git

@@ -112,17 +112,34 @@ if training_results and selected_model_name in training_results:
     if metrics['AUC']:
         st.sidebar.metric('AUC', f"{metrics['AUC']:.4f}")
 
-# Section for uploading test data
-st.header('Upload Test Data for Predictions')
-st.write(f'Upload a CSV file with the same {len(feature_names)} features as the training data.')
-st.write(f'**Required features:** {", ".join(feature_names[:3])}... (see details below)')
+# Sidebar - Download test data template
+st.sidebar.divider()
+st.sidebar.subheader('📥 Test Data Template')
+test_template_path = os.path.join(MODELS_DIR, 'test.csv')
+if os.path.exists(test_template_path):
+    with open(test_template_path, 'rb') as f:
+        test_csv_data = f.read()
+    
+    st.sidebar.download_button(
+        label="📄 Download test.csv",
+        data=test_csv_data,
+        file_name='test.csv',
+        mime='text/csv',
+        help='Download the actual test data used during model training'
+    )
+    st.sidebar.caption(f'57 samples with {len(feature_names)} features')
 
-with st.expander("View Required Feature Names"):
-    st.write(", ".join(feature_names))
+# Sidebar - Upload test data
+st.sidebar.divider()
+st.sidebar.subheader('📤 Upload Test Data')
+uploaded_test_file = st.sidebar.file_uploader('Upload CSV file', type=['csv'], key='test_upload', help=f'CSV must have {len(feature_names)} features')
 
-uploaded_test_file = st.file_uploader('Upload Test CSV', type=['csv'], key='test_upload')
+with st.sidebar.expander("View Required Features"):
+    st.caption(", ".join(feature_names))
 
+# Main content area - Prediction results
 if uploaded_test_file is not None:
+    st.header('Prediction Results')
     test_data = pd.read_csv(uploaded_test_file)
     st.write(f'**Test data shape:** {test_data.shape}')
     st.dataframe(test_data.head())
@@ -159,4 +176,16 @@ if uploaded_test_file is not None:
             st.metric(f'{target_names[1]} (Benign)', int((predictions == 1).sum()))
             if probabilities is not None:
                 st.metric('Avg Confidence', f"{probabilities.max(axis=1).mean():.4f}")
-
+else:
+    # Display instructions when no file is uploaded
+    st.header('Get Started')
+    st.info('👈 Use the sidebar to:\n\n1. **Download** the test data template (test.csv)\n2. **Upload** your test CSV file\n3. View predictions and results here')
+    
+    st.markdown('---')
+    st.subheader('How to Use')
+    st.markdown('''
+    **Step 1:** Select a model from the sidebar  
+    **Step 2:** Download the test.csv template (optional)  
+    **Step 3:** Upload your CSV file with the required features  
+    **Step 4:** View predictions and download results
+    ''')

@@ -365,27 +365,22 @@ def train_and_save_all_models(output_dir='trained_models'):
     print(f"   Training samples: {len(X_train)}")
     print(f"   Test samples: {len(X_test)}")
     
-    # Save original data sample (first 10 rows)
-    original_sample = X_train.head(10).copy()
-    original_sample['target'] = y_train.iloc[:10].values
-    original_sample_path = os.path.join(output_dir, 'data_sample_original.csv')
-    original_sample.to_csv(original_sample_path, index=False)
-    print(f"   Original data sample saved: {original_sample_path}")
-    
     # Scale features
     print("\n3. Applying z-score normalization...")
     X_train_scaled, X_test_scaled, scaler = scale_features(X_train, X_test)
     
-    # Save scaled data sample (first 10 rows)
-    scaled_sample = pd.DataFrame(
-        X_train_scaled[:10], 
-        columns=X_train.columns
-    )
-    scaled_sample['target'] = y_train.iloc[:10].values
-    scaled_sample_path = os.path.join(output_dir, 'data_sample_scaled.csv')
-    scaled_sample.to_csv(scaled_sample_path, index=False)
-    print(f"   Scaled data sample saved: {scaled_sample_path}")
+    # Save actual test data (X_test without target) for users to download as template
+    test_data_template = X_test.copy()
+    test_data_path = os.path.join(output_dir, 'test.csv')
+    test_data_template.to_csv(test_data_path, index=False)
+    print(f"   Test data template saved: {test_data_path}")
     
+    # Save test data with actual labels (for reference/validation)
+    test_data_with_target = X_test.copy()
+    test_data_with_target['target'] = y_test.values
+    test_data_with_target_path = os.path.join(output_dir, 'test_with_labels.csv')
+    test_data_with_target.to_csv(test_data_with_target_path, index=False)
+    print(f"   Test data with labels saved: {test_data_with_target_path}")
     
     # Save scaler
     scaler_path = os.path.join(output_dir, 'scaler.pkl')
@@ -468,7 +463,8 @@ def train_and_save_all_models(output_dir='trained_models'):
     print(f"  - 1 scaler file (scaler.pkl)")
     print(f"  - 1 metadata file (metadata.json)")
     print(f"  - 1 results file (training_results.json)")
-    print(f"  - 2 data sample files (original & scaled CSV)")
+    print(f"  - 1 test data template (test.csv) - {len(X_test)} samples")
+    print(f"  - 1 test data with labels (test_with_labels.csv)")
     print("\nYou can now use these artifacts in the Streamlit app for predictions.")
     
     return model_results
