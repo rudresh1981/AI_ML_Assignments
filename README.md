@@ -80,19 +80,19 @@ Six machine learning models were evaluated for breast cancer classification:
 
 | ML Model Name          | Performance Observations |
 |------------------------|--------------------------|
-| **k-NN**              | **Best overall performer** with highest accuracy (98.25%) and perfect recall (100%), meaning it correctly identified all malignant cases. Excellent AUC (0.9927) indicates strong discriminative ability. Only 1 false positive occurred. Ideal for this critical healthcare application where missing malignant cases is costly. |
-| **Random Forest**     | **Second-best performance** with very high accuracy (96.49%) and the highest AUC (0.9947). Balanced precision and recall (97.22% each) demonstrate consistent performance across both classes. Ensemble method provides robust predictions with minimal overfitting. Excellent choice for production deployment. |
-| **Logistic Regression** | Strong performer with 96.49% accuracy and excellent interpretability. High AUC (0.9894) shows good probability calibration. Balanced precision-recall trade-off makes it reliable for clinical decision support. Computationally efficient and provides probability estimates for risk assessment. |
-| **XGBoost**           | Good performance (94.74% accuracy) with exceptional AUC (0.9921), second only to Random Forest. Slightly lower recall (94.44%) means it missed 2 malignant cases. Advanced gradient boosting provides competitive results but may require more computational resources. |
-| **Naive Bayes**       | Achieved 94.74% accuracy with excellent AUC (0.9907). Despite strong probabilistic assumptions, performs well on this dataset. Fast training and prediction makes it suitable for real-time applications. Same recall (94.44%) as XGBoost with 2 missed malignant cases. |
-| **Decision Tree**     | Lowest accuracy (92.98%) among evaluated models but still respectable. Lower recall (91.67%) means 3 malignant cases were misclassified. Highly interpretable with clear decision rules. More prone to overfitting compared to ensemble methods. Best used as a baseline or for rule extraction. |
+| **k-NN**              | Achieved highest accuracy (98.25%) with perfect recall (1.0000), successfully identifying all 36 malignant cases without false negatives. AUC of 0.9927 demonstrates superior class separation. Single false positive (1/57) indicates excellent specificity. MCC of 0.9626 confirms strong balanced performance across both classes. |
+| **Random Forest**     | Demonstrated robust performance with 96.49% accuracy and highest AUC (0.9947), indicating optimal probability calibration. Balanced precision and recall (0.9722) across both classes with identical performance metrics to Logistic Regression. Ensemble approach minimizes overfitting risk while maintaining interpretability through feature importance analysis. |
+| **Logistic Regression** | Delivered 96.49% accuracy with well-calibrated probabilities (AUC: 0.9894). Balanced precision-recall (0.9722) indicates consistent performance without class bias. Linear decision boundary provides interpretable coefficients for clinical feature analysis. Computationally efficient with minimal hyperparameter tuning required. |
+| **XGBoost**           | Achieved 94.74% accuracy with exceptional AUC (0.9921), second-highest among all models. Recall of 0.9444 indicates 2 false negatives from 36 malignant cases. Gradient boosting architecture provides non-linear decision boundaries. MCC of 0.8886 confirms reliable performance despite moderate computational complexity. |
+| **Naive Bayes**       | Attained 94.74% accuracy with strong AUC (0.9907) despite independence assumption. Recall of 0.9444 with 2 false negatives matches XGBoost performance. Probabilistic framework enables fast training and prediction. Gaussian distribution assumption appears appropriate for normalized continuous features. |
+| **Decision Tree**     | Recorded lowest accuracy (92.98%) with 3 false negatives (recall: 0.9167). AUC of 0.9345 indicates moderate discriminative ability. Single-tree architecture provides maximum interpretability with explicit decision rules. MCC of 0.8545 suggests adequate but suboptimal performance. Prone to overfitting without ensemble aggregation. |
 
 ### Key Insights
 
-1. **Distance-based method (k-NN) excelled** due to well-separated clusters in the normalized feature space
-2. **Ensemble methods (Random Forest, XGBoost)** demonstrated robust performance with high AUC scores
-3. **All models achieved >92% accuracy**, indicating the dataset has strong predictive signals
-4. **Recall is critical** in medical diagnosis - k-NN's perfect recall (no missed malignant cases) makes it particularly valuable
-5. **High AUC scores (>0.93)** across all models show excellent probability calibration for risk stratification
+1. **Distance-based k-NN achieved optimal performance** (accuracy: 98.25%, recall: 1.0) on normalized features, indicating well-separated class distributions in 30-dimensional feature space.
+2. **Ensemble methods outperformed single models** with Random Forest (AUC: 0.9947) and XGBoost (AUC: 0.9921) demonstrating superior probability calibration and generalization capability.
+3. **All models exceeded 92% accuracy threshold**, confirming strong predictive signals in tumor characteristics with effective z-score normalization preprocessing.
+4. **Recall prioritization is critical** for clinical deployment—k-NN's zero false negative rate minimizes risk of undetected malignant cases, aligning with medical diagnostic requirements.
+5. **Consistent AUC performance above 0.93** across all models validates dataset quality and feature engineering effectiveness for binary classification task.
 
 ---

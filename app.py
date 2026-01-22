@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 import json
 import os
+import time
 
 # Import only the prediction function from model_training module
 from model_training import predict_new_data
@@ -81,36 +82,36 @@ target_names = metadata['target_names']
 
 st.write(f'**Target Classes:** {target_names[0]} (Malignant=0), {target_names[1]} (Benign=1)')
 
-# Show available models and their performance
-with st.expander("View Pre-Trained Models Performance"):
-    if training_results:
-        for model_name, result in training_results.items():
-            st.write(f"**{model_name}**")
-            metrics = result['metrics']
-            cols = st.columns(6)
-            cols[0].metric('Accuracy', f"{metrics['Accuracy']:.4f}")
-            cols[1].metric('Precision', f"{metrics['Precision']:.4f}")
-            cols[2].metric('Recall', f"{metrics['Recall']:.4f}")
-            cols[3].metric('F1', f"{metrics['F1']:.4f}")
-            if metrics['AUC']:
-                cols[4].metric('AUC', f"{metrics['AUC']:.4f}")
-            cols[5].metric('MCC', f"{metrics['MCC']:.4f}")
-            st.divider()
-
-# Sidebar for model selection
+# Sidebar for model selection (moved up before performance table)
 st.sidebar.header('Model Selection')
 model_names_list = list(models.keys())
 selected_model_name = st.sidebar.selectbox('Choose pre-trained model', options=model_names_list)
 selected_model = models[selected_model_name]
 
-# Display selected model performance
-st.sidebar.subheader('Selected Model Performance')
-if training_results and selected_model_name in training_results:
-    metrics = training_results[selected_model_name]['metrics']
-    st.sidebar.metric('Accuracy', f"{metrics['Accuracy']:.4f}")
-    st.sidebar.metric('F1-Score', f"{metrics['F1']:.4f}")
-    if metrics['AUC']:
-        st.sidebar.metric('AUC', f"{metrics['AUC']:.4f}")
+# Show available models and their performance (always visible - compact view)
+st.subheader('Pre-Trained Models Performance')
+if training_results:
+    # Create a dataframe for compact table view
+    performance_data = []
+    for model_name, result in training_results.items():
+        metrics = result['metrics']
+        # Add visual indicator for selected model
+        display_name = f"➤ {model_name}" if model_name == selected_model_name else model_name
+        performance_data.append({
+            'Model': display_name,
+            'Accuracy': f"{metrics['Accuracy']:.4f}",
+            'Precision': f"{metrics['Precision']:.4f}",
+            'Recall': f"{metrics['Recall']:.4f}",
+            'F1': f"{metrics['F1']:.4f}",
+            'AUC': f"{metrics['AUC']:.4f}" if metrics['AUC'] else 'N/A',
+            'MCC': f"{metrics['MCC']:.4f}"
+        })
+    
+    performance_df = pd.DataFrame(performance_data)
+    st.dataframe(performance_df, use_container_width=True, hide_index=True)
+    
+
+st.divider()
 
 # Sidebar - Download test data template
 st.sidebar.divider()
@@ -144,10 +145,18 @@ if uploaded_test_file is not None:
     st.write(f'**Test data shape:** {test_data.shape}')
     st.dataframe(test_data.head())
     
+    # Measure prediction time
+    start_time = time.time()
+    
     # Use the prediction function from model_training module with pre-trained model
     result_df, predictions, probabilities, error_msg = predict_new_data(
         selected_model, scaler, test_data, feature_names, target_names
     )
+    
+    # Calculate prediction time
+    end_time = time.time()
+    prediction_time = end_time - start_time
+    avg_prediction_time = prediction_time / len(test_data) if len(test_data) > 0 else 0
     
     if error_msg:
         st.error(f'{error_msg}')
@@ -168,7 +177,7 @@ if uploaded_test_file is not None:
         
         # Summary statistics
         st.subheader('Prediction Summary')
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.metric('Total Predictions', len(predictions))
             st.metric(f'{target_names[0]} (Malignant)', int((predictions == 0).sum()))
@@ -176,6 +185,9 @@ if uploaded_test_file is not None:
             st.metric(f'{target_names[1]} (Benign)', int((predictions == 1).sum()))
             if probabilities is not None:
                 st.metric('Avg Confidence', f"{probabilities.max(axis=1).mean():.4f}")
+        with col3:
+            st.metric('Total Time', f"{prediction_time:.4f} sec")
+            st.metric('Avg Time/Sample', f"{avg_prediction_time*1000:.2f} ms")
 else:
     # Display instructions when no file is uploaded
     st.header('Get Started')
