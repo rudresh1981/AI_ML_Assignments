@@ -163,7 +163,7 @@ if uploaded_test_file is not None:
         st.write('Please ensure your CSV has the correct format and features.')
     else:
         st.success(f'Predictions completed for {len(test_data)} samples using {selected_model_name}!')
-        st.subheader('Prediction Results')
+        st.subheader(f'Prediction Results - {selected_model_name}')
         st.dataframe(result_df)
         
         # Download predictions
