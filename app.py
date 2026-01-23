@@ -82,14 +82,40 @@ target_names = metadata['target_names']
 
 st.write(f'**Target Classes:** {target_names[0]} (Malignant=0), {target_names[1]} (Benign=1)')
 
-# Sidebar for model selection (moved up before performance table)
+# Sidebar - Instructions at the top with download option
+st.sidebar.header('📋 How to Use')
+st.sidebar.markdown('''
+1. **Select** a model below
+2. **Download** test template
+3. **Upload** your CSV file
+4. **View** predictions in main area
+''')
+
+# Download test data template
+test_template_path = os.path.join(MODELS_DIR, 'test.csv')
+if os.path.exists(test_template_path):
+    with open(test_template_path, 'rb') as f:
+        test_csv_data = f.read()
+    
+    st.sidebar.download_button(
+        label="📄 Download BreastCancer_test.csv",
+        data=test_csv_data,
+        file_name='BreastCancer_test.csv',
+        mime='text/csv',
+        help='Test data (57 samples, 30 features)',
+        use_container_width=True
+    )
+
+st.sidebar.divider()
+
+# Sidebar for model selection
 st.sidebar.header('Model Selection')
 model_names_list = list(models.keys())
-selected_model_name = st.sidebar.selectbox('Choose pre-trained model', options=model_names_list)
+selected_model_name = st.sidebar.selectbox('Select model', options=model_names_list)
 selected_model = models[selected_model_name]
 
 # Show available models and their performance (always visible - compact view)
-st.subheader('Pre-Trained Models Performance')
+st.subheader('Training Performance comparison')
 if training_results:
     # Create a dataframe for compact table view
     performance_data = []
@@ -113,29 +139,12 @@ if training_results:
 
 st.divider()
 
-# Sidebar - Download test data template
-st.sidebar.divider()
-st.sidebar.subheader('📥 Test Data Template')
-test_template_path = os.path.join(MODELS_DIR, 'test.csv')
-if os.path.exists(test_template_path):
-    with open(test_template_path, 'rb') as f:
-        test_csv_data = f.read()
-    
-    st.sidebar.download_button(
-        label="📄 Download test.csv",
-        data=test_csv_data,
-        file_name='test.csv',
-        mime='text/csv',
-        help='Download the actual test data used during model training'
-    )
-    st.sidebar.caption(f'57 samples with {len(feature_names)} features')
-
 # Sidebar - Upload test data
 st.sidebar.divider()
-st.sidebar.subheader('📤 Upload Test Data')
+st.sidebar.subheader('Upload Data for Prediction')
 uploaded_test_file = st.sidebar.file_uploader('Upload CSV file', type=['csv'], key='test_upload', help=f'CSV must have {len(feature_names)} features')
 
-with st.sidebar.expander("View Required Features"):
+with st.sidebar.expander("Required Features"):
     st.caption(", ".join(feature_names))
 
 # Main content area - Prediction results
@@ -160,11 +169,24 @@ if uploaded_test_file is not None:
     
     if error_msg:
         st.error(f'{error_msg}')
-        st.write('Please ensure your CSV has the correct format and features.')
+        st.write('Please ensure the uploaded file has features. See feature list in sidebar or the test data template.')
     else:
-        st.success(f'Predictions completed for {len(test_data)} samples using {selected_model_name}!')
-        st.subheader(f'Prediction Results - {selected_model_name}')
-        st.dataframe(result_df)
+        st.success(f'Predictions completed for {len(test_data)} input file using {selected_model_name}!')
+        
+        # Container for predictions (this will be targeted for scrolling)
+        with st.container():
+            st.subheader(f'Prediction Results - {selected_model_name}')
+            st.dataframe(result_df)
+            
+            # Scroll to this section after render
+            st.components.v1.html(
+                """
+                <script>
+                    window.parent.document.querySelector('[data-testid="stVerticalBlock"]').scrollIntoView({behavior: 'smooth'});
+                </script>
+                """,
+                height=0,
+            )
         
         # Download predictions
         csv = result_df.to_csv(index=False)
@@ -189,15 +211,6 @@ if uploaded_test_file is not None:
             st.metric('Total Time', f"{prediction_time:.4f} sec")
             st.metric('Avg Time/Sample', f"{avg_prediction_time*1000:.2f} ms")
 else:
-    # Display instructions when no file is uploaded
-    st.header('Get Started')
-    st.info('👈 Use the sidebar to:\n\n1. **Download** the test data template (test.csv)\n2. **Upload** your test CSV file\n3. View predictions and results here')
-    
-    st.markdown('---')
-    st.subheader('How to Use')
-    st.markdown('''
-    **Step 1:** Select a model from the sidebar  
-    **Step 2:** Download the test.csv template (optional)  
-    **Step 3:** Upload your CSV file with the required features  
-    **Step 4:** View predictions and download results
-    ''')
+    # Display message when no file is uploaded
+    st.info('Upload test data ,CSV file, in sidebar to get started with predictions.')
+
